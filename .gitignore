@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+payloads/
+logs/
+**.ipynb
+service_account.json
+verificator.py
