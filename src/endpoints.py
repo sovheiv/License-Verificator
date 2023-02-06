@@ -19,10 +19,10 @@ def verificate():
 
     current_app.logger.debug(webhook)
 
-    hashed = hash_key(current_app.config["KEY1"] + webhook["key2"])
+    hashed = hash_key(os.getenv('KEY1') + webhook["key2"])
 
     if hashed == webhook["key1"]:
-        resp = hash_key(current_app.config["KEY2"] + webhook["key2"])
+        resp = hash_key(os.getenv('KEY2') + webhook["key2"])
         current_app.logger.info("Verification completed")
         return {"success": resp}
 
