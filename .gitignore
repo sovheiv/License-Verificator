@@ -5,3 +5,4 @@ logs/
 **.ipynb
 service_account.json
 verificator.py
+.env
