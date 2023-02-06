@@ -2,7 +2,6 @@ import logging
 import logging.config
 
 import yaml
-from environs import Env
 from flask import Flask
 
 from .endpoints import admin
@@ -17,11 +16,6 @@ def create_app():
     app = Flask(__name__)
     app.register_blueprint(admin)
 
-    env = Env()
-    env.read_env(override=True)
-    app.config.from_prefixed_env()
-
-    print(app.config)
     app.logger = logger
     print("app created")
     return app

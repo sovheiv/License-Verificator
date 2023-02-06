@@ -2,14 +2,14 @@ import hashlib
 import json
 
 from flask import Blueprint, current_app, request
-
+import os
 admin = Blueprint("admin", __name__)
 
 
 @admin.route("/test")
 def index():
     current_app.logger.info("test")
-    return {"verificator": False, "test": current_app.config["PORT"]}
+    return {"verificator": False, "test": os.getenv('FLASK_DEBUG_PORT')}
 
 
 @admin.route("/verificate", methods=["POST"])
