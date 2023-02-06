@@ -4,7 +4,7 @@ disable_existing_loggers: false
 
 formatters:
   light_formatter:
-    format: "[{asctime}] in {filename} {funcName} #{levelname}: {message}"
+    format: "in {filename} {funcName} #{levelname}: {message}"
     datefmt: '%H:%M:%S'
     style: "{"
 
@@ -20,6 +20,4 @@ loggers:
     handlers:
     - console_handler
     propagate: false
-
-        
 

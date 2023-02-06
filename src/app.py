@@ -17,5 +17,5 @@ def create_app():
     app.register_blueprint(admin)
 
     app.logger = logger
-    print("app created")
+    app.logger.info("app created")
     return app

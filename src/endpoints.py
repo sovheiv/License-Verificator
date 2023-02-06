@@ -3,13 +3,14 @@ import json
 
 from flask import Blueprint, current_app, request
 import os
+
 admin = Blueprint("admin", __name__)
 
 
-@admin.route("/test")
+@admin.route("/")
 def index():
     current_app.logger.info("test")
-    return {"verificator": False, "test": os.getenv('FLASK_DEBUG_PORT')}
+    return {"page": "Main page", "env_var_test": os.getenv("TEST_ENV_NUM")}
 
 
 @admin.route("/verificate", methods=["POST"])
@@ -19,10 +20,10 @@ def verificate():
 
     current_app.logger.debug(webhook)
 
-    hashed = hash_key(os.getenv('KEY1') + webhook["key2"])
+    hashed = hash_key(os.getenv("KEY1") + webhook["key2"])
 
     if hashed == webhook["key1"]:
-        resp = hash_key(os.getenv('KEY2') + webhook["key2"])
+        resp = hash_key(os.getenv("KEY2") + webhook["key2"])
         current_app.logger.info("Verification completed")
         return {"success": resp}
 
@@ -37,4 +38,4 @@ def hash_key(key):
 @admin.app_errorhandler(404)
 def handle_404(error):
     print(error)
-    return "<center><b><mark> Page not found </mark></b></center>"
+    return "<center><b> Page not found </b></center>"

@@ -1,7 +1,8 @@
 from src import create_app
+
 app = create_app()
 
 
 if __name__ == "__main__":
-    print("Running serer")
+    app.logger.info("Running serer")
     app.run(port=5002)
