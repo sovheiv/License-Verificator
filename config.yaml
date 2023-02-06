@@ -1,8 +1,0 @@
----
-
-  startup_api_key: "xks8yow8jw7baej7fbyp1r2m6c17zj5834mdghel6wm50hemo6842fqipf8w1sxn5oi09198g2n09ubrnmhfxv610ppus7sggzxfa6do3yqwj61gm70vib6ypx4kw3f7"
-  startup_server_key: "3joa5b7j9l7gg7q76myft0mwae1flf7e1kwu29bfosbkeza6xng52v3ek3r6pfu8bkvkmbnjo3t722m29nff5oyjw7d8qtagdx06qi053w4gq7arnx1oz2rytzdr6cpd"
-
-  #setup
-  run_ngrok: false
-  port: 5000
