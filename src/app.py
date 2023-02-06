@@ -2,11 +2,10 @@ import logging
 import logging.config
 
 import yaml
-from flask import Config, Flask
 from environs import Env
+from flask import Flask
 
 from .endpoints import admin
-
 
 with open("./logger.yaml", "r") as stream:
     loggers_config = yaml.load(stream, Loader=yaml.FullLoader)
