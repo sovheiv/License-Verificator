@@ -1,38 +1,38 @@
 import hashlib
-import json
-
-from flask import Blueprint, current_app, request
 import os
+
+import rsa
+from flask import Blueprint, current_app, request
 
 admin = Blueprint("admin", __name__)
 
 
 @admin.route("/")
 def index():
-    current_app.logger.info("test")
+    current_app.logger.info("Main page")
     return {"page": "Main page", "env_var_test": os.getenv("TEST_ENV_NUM")}
-
 
 @admin.route("/verificate", methods=["POST"])
 def verificate():
-    webhook = json.loads(request.data.decode())
-    current_app.logger.info("Verification start")
+    key_hash = request.headers["Authorization"]
+    enc_msg = request.data
+    
+    current_app.logger.info(f"Verification started for {request.remote_addr}")
 
-    current_app.logger.debug(webhook)
+    if hash_key(os.getenv("PUBLIC_KEY"), os.getenv("IN_SALT")) != key_hash:
+        current_app.logger.info("Key not found by hash")
+        return {"success": False}
 
-    hashed = hash_key(os.getenv("KEY1") + webhook["key2"])
+    current_app.logger.info("Key exist")
 
-    if hashed == webhook["key1"]:
-        resp = hash_key(os.getenv("KEY2") + webhook["key2"])
-        current_app.logger.info("Verification completed")
-        return {"success": resp}
+    privat_key = rsa.PrivateKey.load_pkcs1(os.getenv("PRIVAT_KEY"))
+    dec_msg = rsa.decrypt(enc_msg, privat_key).decode()
 
-    current_app.logger.info("Verification faild")
-    return {"success": False}
+    return {"success": hash_key(dec_msg, os.getenv("OUT_SALT"))}
 
 
-def hash_key(key):
-    return hashlib.sha512(str.encode(key + "kaban")).hexdigest()
+def hash_key(key, salt):
+    return hashlib.sha256(str.encode(key + salt)).hexdigest()
 
 
 @admin.app_errorhandler(404)
