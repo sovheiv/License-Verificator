@@ -4,7 +4,7 @@ from flask import Blueprint, abort, current_app, request
 from peewee import DoesNotExist, IntegrityError
 
 from ..models import ApiKey, OneTimePass, UserTb
-from .func import gen_rsa_keys
+from .func import decrypt_msg, gen_rsa_keys, hash_key
 
 user_routes = Blueprint("user", __name__)
 
@@ -45,7 +45,12 @@ def create_key():
             user = get_user(name, password, curr_ip)
 
             public_key, private_key = gen_rsa_keys()
-            apikey = ApiKey.create(public_key=public_key, private_key=private_key, fk_user=user)
+            apikey = ApiKey.create(
+                public_key=public_key,
+                public_key_hash=hash_key(public_key, current_app.config["user"]["key_salt"]),
+                private_key=private_key,
+                fk_user=user,
+            )
 
             one_time_pass.activation_time = datetime.now()
             one_time_pass.activation_ip = curr_ip
@@ -61,7 +66,7 @@ def create_key():
             return {"success": False, "msg": str(error)}
 
     current_app.logger.info(f"{curr_ip} created ApiKey")
-    return {"success": True, "msg": f"User: {name} created for ip: {curr_ip}. Key added."}
+    return {"success": True, "msg": f"User: {name} created for ip: {curr_ip}.", "key": public_key}
 
 
 def get_user(name, password, curr_ip):
@@ -79,3 +84,20 @@ def get_user(name, password, curr_ip):
         current_app.logger.info(f"New user created: {name}")
 
     return user
+
+
+@user_routes.route("/verificate", methods=["POST"])
+def vereficate():
+    key_hash = request.headers["Authorization"]
+    try:
+        key = ApiKey.get(ApiKey.public_key_hash == key_hash)
+    except DoesNotExist:
+        current_app.logger.info(f"Verification failed")
+        abort(403)
+
+    dec_msg = decrypt_msg(request.data, key.private_key).decode()
+
+    current_app.logger.info(f"User {key.fk_user.name} verified with key {key.public_key[:15]}...")
+    hashed_msg = hash_key(dec_msg, current_app.config["user"]["msg_salt"])
+
+    return {"success": True, "msg": hashed_msg}

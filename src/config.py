@@ -24,6 +24,11 @@ class CustomConfig(Config):
                 "public_key": env.str("PUBLIC_KEY"),
                 "salt": env.str("SALT"),
             }
+        with env.prefixed("USER_"):
+            self["user"] = {
+                "key_salt": env.str("KEY_SALT"),
+                "msg_salt": env.str("MSG_SALT"),
+            }
 
         with env.prefixed("FLASK_"):
             self["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=env.int("PERMANENT_SESSION_LIFETIME"))

@@ -19,6 +19,12 @@ def encrypt_msg(msg: str, key_text: str):
     return rsa.encrypt(msg.encode(), key)
 
 
+def decrypt_msg(msg: bytes, key_text: str):
+    key_text = key_text.join(("-----BEGIN RSA PRIVATE KEY-----\n", "\n-----END RSA PRIVATE KEY-----"))
+    key = rsa.PrivateKey.load_pkcs1(key_text)
+    return rsa.decrypt(msg, key)
+
+
 def gen_rsa_keys(nbits=512):
     public_key, private_key = rsa.newkeys(nbits)
 

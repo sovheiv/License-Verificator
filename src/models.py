@@ -19,6 +19,7 @@ class UserTb(BaseModel):
 
 class ApiKey(BaseModel):
     public_key = TextField(unique=True)
+    public_key_hash = TextField(unique=True)
     private_key = TextField(unique=True)
     is_active = BooleanField(default=True)
     activation_time = DateTimeField(default=datetime.now())
