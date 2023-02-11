@@ -6,4 +6,3 @@ README.md
 *.ipynb
 __pycache__
 .pytest_cache
-.env
