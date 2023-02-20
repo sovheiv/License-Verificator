@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  test_website:
+    container_name: License-Verificator
+    network_mode: "host"
+    build: "https://github.com/sovheiv/License-Verificator.git#main:"
+    env_file:
+      - .env
